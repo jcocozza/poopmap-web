@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Poop Map</title>
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+    />
+    <link rel="stylesheet" href="/static/styles.css" />
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+
+    <script src="static/config.js"></script>
+  </head>
+  <body>
+    <!-- This is the actual map -->
+    <div id="map" style="height: 95vh;"></div>
+    <script src="static/map.js"></script>
+
+    <!-- when a marker is pressed, this is shown -->
+    <div id="location-modal" class="modal">
+      <div class="modal-content">
+        <span id="modal-close-button" class="close-btn">&times;</span>
+        <!-- in particular, this div's inner html is replaced -->
+        <div id="location-dynamic-modal-content"></div>
+      </div>
+    </div>
+
+    <!-- When map is pressed, this is shown allowing user to create a new location -->
+    <div id="new-location-modal" class="modal">
+      <div class="modal-content">
+        <span id="new-loc-modal-close-button" class="close-btn">&times;</span>
+        <h2>Add Location</h2>
+        <form id="new-location-form">
+          <label for="name">Name:</label>
+          <input type="text" id="name" name="name" required/><br /><br />
+
+          <label for="location-type">What kind of bathroom is this?</label>
+          <select name="location-type" id="location-type" required>
+            <option value="outhouse">Outhouse</option>
+            <option value="porta-potty">Porta Potty</option>
+            <option value="regular" selected>Regular</option>
+          </select>
+          <br /><br />
+
+          <label for="accessible">Accessible</label>
+          <input
+            type="checkbox"
+            id="accessible"
+            name="accessible"
+            value="true"
+          />
+
+          <h4>Seasonality:</h4>
+          <div id="seasons">
+            <label for="summer">
+              <input type="checkbox" id="summer" name="seasons" value="summer" checked/> Summer
+            </label>
+            <label for="fall">
+              <input type="checkbox" id="fall" name="seasons" value="fall" checked/> Fall
+            </label>
+            <label for="winter">
+              <input type="checkbox" id="winter" name="seasons" value="winter" checked/> Winter
+            </label>
+            <label for="spring">
+              <input type="checkbox" id="spring" name="seasons" value="spring" checked/> Spring
+            </label>
+          </div>
+
+          <label for="info">Info:</label><br />
+          <textarea
+            id="info"
+            name="info"
+            placeholder="any quirks about this place?"
+          ></textarea
+          ><br /><br />
+
+          <button type="submit">Submit</button>
+        </form>
+      </div>
+    </div>
+  </body>
+</html>
