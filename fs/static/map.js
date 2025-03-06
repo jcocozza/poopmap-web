@@ -1,34 +1,15 @@
-const map = L.map("map"); //.setView([51.505, -0.09], 13); // Starting position: [lat, lon], zoom level
+const map = L.map("map");
 
 // naviagte to the user
 map.locate({ setView: true });
-
 // Add a tile layer (OpenStreetMap here, but you could also use Google Maps or others)
 L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
   attribution:
     '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
 }).addTo(map);
 
-// Create a custom control for the button
-var buttonControl = L.control({ position: "topright" });
-
-buttonControl.onAdd = function (map) {
-  var div = L.DomUtil.create("div", "leaflet-bar");
-  var button = L.DomUtil.create("button", "my-button");
-  button.innerHTML = "To Me";
-
-  // Add an event listener to the button
-  L.DomEvent.on(button, "click", function (e) {
-    L.DomEvent.stopPropagation(e);
-    map.locate({ setView: true });
-  });
-
-  div.appendChild(button);
-  return div;
-};
-
-// Add the button control to the map
-buttonControl.addTo(map);
+// a map that stores the displayed markers
+const markers_state = new Map();
 
 class Marker {
   constructor(
@@ -69,16 +50,39 @@ class Marker {
   }
 }
 
+// a button that centers the map back to the user's location
+var buttonControl = L.control({ position: "topright" });
+buttonControl.onAdd = function (map) {
+  var div = L.DomUtil.create("div", "leaflet-bar");
+  var button = L.DomUtil.create("button", "my-button");
+  button.innerHTML = "To Me";
+  L.DomEvent.on(button, "click", function (e) {
+    L.DomEvent.stopPropagation(e);
+    map.locate({ setView: true });
+  });
+
+  div.appendChild(button);
+  return div;
+};
+buttonControl.addTo(map);
+
 function upvote(uuid) {
   fetch(`${API_BASE_URL}/location/${uuid}/upvote`, {
     method: "POST",
-  }).catch((error) => console.error("Error:", error));
+  })
+    .then(() => {
+      markers_state.get(uuid).upvotes++;
+    })
+    .catch((error) => console.error("Error:", error));
 }
 
 function downvote(uuid) {
   fetch(`${API_BASE_URL}/location/${uuid}/downvote`, {
     method: "POST",
   })
+    .then(() => {
+      markers_state.get(uuid).downvotes++;
+    })
     .catch((error) => console.error("Error:", error));
 }
 
@@ -96,35 +100,48 @@ function create_marker_modal(mkr) {
         </div>`;
 }
 
+function display_marker_modal(uuid) {
+  mkr = markers_state.get(uuid);
+  modal = document.getElementById("location-modal");
+  modal_content = document.getElementById("location-dynamic-modal-content");
+  // set the content
+  modal_content.innerHTML = create_marker_modal(mkr);
+  // actually make the modal show
+  modal.style.display = "block";
+
+  // when we want to close
+  modal_close_btn = document.getElementById("modal-close-button");
+  modal_close_btn.onclick = function () {
+    modal.style.display = "none";
+  };
+  // somehow this allows the popup to be dismissed if you click off it
+  window.onclick = function (e) {
+    if (e.target == modal) {
+      modal.style.display = "none";
+    }
+  };
+}
+
 // takes in a Marker()
 function add_marker_to_map(mkr) {
   var m = L.marker([mkr.lat, mkr.lng]).addTo(map);
   m._icon.style.filter = `hue-rotate(${mkr.hue_rotate}deg)`;
-
+  m.uuid = mkr.uuid;
   m.on("click", function (e) {
-    modal_content = document.getElementById("location-dynamic-modal-content");
-    modal_content.innerHTML = create_marker_modal(mkr);
-    popup = document.getElementById("location-modal");
-    popup.style.display = "block";
-    modal_close_btn = document.getElementById("modal-close-button");
-    modal_close_btn.onclick = function () {
-      popup.style.display = "none";
-    };
-    // somehow this allows the popup to be dismissed if you click off it
-    window.onclick = function (e) {
-      if (e.target == popup) {
-        popup.style.display = "none";
-      }
-    };
+    display_marker_modal(mkr.uuid);
   });
 }
 
 async function load_locations() {
-  await fetch(API_ROUTES.GET_LOCATIONS)
+  const bounds = map.getBounds();
+  const southwest = bounds.getSouthWest();
+  const northeast = bounds.getNorthEast();
+  await fetch(
+    `${API_ROUTES.GET_LOCATIONS}?latlow=${southwest.lat}&lathigh=${northeast.lat}&lnglow=${southwest.lng}&lnghigh=${northeast.lng}`,
+  )
     .then((resp) => resp.json())
     .then((data) => {
       for (let i = 0; i < data.length; i++) {
-        // console.log("adding: ", data[i]);
         const mkr = new Marker(
           data[i]["uuid"],
           data[i]["latitude"],
@@ -137,13 +154,20 @@ async function load_locations() {
           data[i]["upvotes"],
           data[i]["downvotes"],
         );
-
+        markers_state.set(mkr.uuid, mkr);
         add_marker_to_map(mkr);
       }
     })
     .catch((error) => console.error("Error:", error));
 }
-load_locations();
+map.on('locationfound', function (e) {
+  // Now that the map has been centered on the user's location
+  load_locations();  // Call your location loading function here
+});
+
+map.on("moveend", function () {
+  load_locations()
+});
 
 // returns new location uuid
 async function create_location(
@@ -231,6 +255,7 @@ map.on("click", function (e) {
         0,
         0,
       );
+      markers_state.set(uuid, mkr);
       add_marker_to_map(mkr);
       form.reset();
       popup.style.display = "none";

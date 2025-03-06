@@ -15,7 +15,7 @@
   </head>
   <body>
     <!-- This is the actual map -->
-    <div id="map" style="height: 95vh;"></div>
+    <div id="map" style="height: 95vh"></div>
     <script src="static/map.js"></script>
 
     <!-- when a marker is pressed, this is shown -->
@@ -34,7 +34,7 @@
         <h2>Add Location</h2>
         <form id="new-location-form">
           <label for="name">Name:</label>
-          <input type="text" id="name" name="name" required/><br /><br />
+          <input type="text" id="name" name="name" required /><br /><br />
 
           <label for="location-type">What kind of bathroom is this?</label>
           <select name="location-type" id="location-type" required>
@@ -55,16 +55,44 @@
           <h4>Seasonality:</h4>
           <div id="seasons">
             <label for="summer">
-              <input type="checkbox" id="summer" name="seasons" value="summer" checked/> Summer
+              <input
+                type="checkbox"
+                id="summer"
+                name="seasons"
+                value="summer"
+                checked
+              />
+              Summer
             </label>
             <label for="fall">
-              <input type="checkbox" id="fall" name="seasons" value="fall" checked/> Fall
+              <input
+                type="checkbox"
+                id="fall"
+                name="seasons"
+                value="fall"
+                checked
+              />
+              Fall
             </label>
             <label for="winter">
-              <input type="checkbox" id="winter" name="seasons" value="winter" checked/> Winter
+              <input
+                type="checkbox"
+                id="winter"
+                name="seasons"
+                value="winter"
+                checked
+              />
+              Winter
             </label>
             <label for="spring">
-              <input type="checkbox" id="spring" name="seasons" value="spring" checked/> Spring
+              <input
+                type="checkbox"
+                id="spring"
+                name="seasons"
+                value="spring"
+                checked
+              />
+              Spring
             </label>
           </div>
 
