@@ -66,12 +66,23 @@ buttonControl.onAdd = function (map) {
 };
 buttonControl.addTo(map);
 
+function update_modal_if_open(uuid) {
+  const modal = document.getElementById("location-modal");
+  if (modal.style.display === "block") {
+    const modal_content = document.getElementById(
+      "location-dynamic-modal-content",
+    );
+    modal_content.innerHTML = create_marker_modal(markers_state.get(uuid));
+  }
+}
+
 function upvote(uuid) {
   fetch(`${API_BASE_URL}/location/${uuid}/upvote`, {
     method: "POST",
   })
     .then(() => {
       markers_state.get(uuid).upvotes++;
+      update_modal_if_open(uuid)
     })
     .catch((error) => console.error("Error:", error));
 }
@@ -82,11 +93,18 @@ function downvote(uuid) {
   })
     .then(() => {
       markers_state.get(uuid).downvotes++;
+      update_modal_if_open(uuid)
     })
     .catch((error) => console.error("Error:", error));
 }
 
 function create_marker_modal(mkr) {
+  function rating() {
+    if (mkr.upvotes === 0 && mkr.downvotes === 0) {
+      return "unrated"
+    }
+    return `${Math.round((mkr.upvotes / (mkr.downvotes + mkr.upvotes)) * 100)}%`
+  }
   return `
       <div style="font-family: Arial, sans-serif; padding: 16px;">
           <h2 style="margin-bottom: 8px;">${mkr.name}</h2>
@@ -95,6 +113,9 @@ function create_marker_modal(mkr) {
           <p><strong>Seasons:</strong> ${mkr.seasons}</p>
           <label for="info" style="font-weight: bold; display: block; margin-top: 8px;">Additional Info:</label>
           <textarea id="info" style="width: 100%; min-height: 80px; padding: 8px;" readonly>${mkr.info}</textarea>
+          <br>
+          <p><strong><a href="https://www.google.com/maps/dir/?api=1&origin=${user_lat},${user_lng}&destination=${mkr.lat},${mkr.lng}">Directions</a></strong></p>
+          <p><strong>Approval Rating:</strong> ${rating()}</p>
           <button onclick="upvote('${mkr.uuid}')">Like(${mkr.upvotes})</button>
           <button onclick="downvote('${mkr.uuid}')">Dislike(${mkr.downvotes})</button>
         </div>`;
@@ -160,13 +181,18 @@ async function load_locations() {
     })
     .catch((error) => console.error("Error:", error));
 }
-map.on('locationfound', function (e) {
+
+var user_lat;
+var user_lng;
+map.on("locationfound", function (e) {
+  user_lat = e.latitude
+  user_lng = e.longitude
   // Now that the map has been centered on the user's location
-  load_locations();  // Call your location loading function here
+  load_locations(); // Call your location loading function here
 });
 
 map.on("moveend", function () {
-  load_locations()
+  load_locations();
 });
 
 // returns new location uuid
