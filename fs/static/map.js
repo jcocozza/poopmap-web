@@ -82,7 +82,7 @@ function upvote(uuid) {
   })
     .then(() => {
       markers_state.get(uuid).upvotes++;
-      update_modal_if_open(uuid)
+      update_modal_if_open(uuid);
     })
     .catch((error) => console.error("Error:", error));
 }
@@ -93,7 +93,7 @@ function downvote(uuid) {
   })
     .then(() => {
       markers_state.get(uuid).downvotes++;
-      update_modal_if_open(uuid)
+      update_modal_if_open(uuid);
     })
     .catch((error) => console.error("Error:", error));
 }
@@ -101,9 +101,9 @@ function downvote(uuid) {
 function create_marker_modal(mkr) {
   function rating() {
     if (mkr.upvotes === 0 && mkr.downvotes === 0) {
-      return "unrated"
+      return "unrated";
     }
-    return `${Math.round((mkr.upvotes / (mkr.downvotes + mkr.upvotes)) * 100)}%`
+    return `${Math.round((mkr.upvotes / (mkr.downvotes + mkr.upvotes)) * 100)}%`;
   }
   return `
       <div style="font-family: Arial, sans-serif; padding: 16px;">
@@ -185,8 +185,8 @@ async function load_locations() {
 var user_lat;
 var user_lng;
 map.on("locationfound", function (e) {
-  user_lat = e.latitude
-  user_lng = e.longitude
+  user_lat = e.latitude;
+  user_lng = e.longitude;
   // Now that the map has been centered on the user's location
   load_locations(); // Call your location loading function here
 });
