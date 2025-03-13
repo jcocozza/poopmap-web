@@ -66,6 +66,32 @@ buttonControl.onAdd = function (map) {
 };
 buttonControl.addTo(map);
 
+// Create the legend control
+var legend = L.control({ position: "bottomright" });
+
+legend.onAdd = function (map) {
+  var div = L.DomUtil.create("div", "legend");
+div.innerHTML = `
+        <h4>Legend</h4>
+        <div>
+            <img src="https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png" style="filter: hue-rotate(30deg); width: 20px; height: 20px; vertical-align: middle;">
+            Porta Potty
+        </div>
+        <div>
+            <img src="https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png" style="filter: hue-rotate(90deg); width: 20px; height: 20px; vertical-align: middle;">
+            Regular
+        </div>
+        <div>
+            <img src="https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png" style="filter: hue-rotate(150deg); width: 20px; height: 20px; vertical-align: middle;">
+            Outhouse
+        </div>
+    `;
+  return div;
+};
+
+// Add the legend to the map
+legend.addTo(map);
+
 function update_modal_if_open(uuid) {
   const modal = document.getElementById("location-modal");
   if (modal.style.display === "block") {
@@ -83,7 +109,7 @@ function upvote(uuid) {
     .then(() => {
       markers_state.get(uuid).upvotes++;
       update_modal_if_open(uuid);
-      load_comments(uuid)
+      load_comments(uuid);
     })
     .catch((error) => console.error("Error:", error));
 }
@@ -95,7 +121,7 @@ function downvote(uuid) {
     .then(() => {
       markers_state.get(uuid).downvotes++;
       update_modal_if_open(uuid);
-      load_comments(uuid)
+      load_comments(uuid);
     })
     .catch((error) => console.error("Error:", error));
 }
@@ -259,7 +285,7 @@ function display_marker_modal(uuid) {
       submit_comment(uuid, commentText);
     }
   });
-  load_comments(uuid)
+  load_comments(uuid);
   // actually make the modal show
   modal.style.display = "block";
   // when we want to close
