@@ -83,6 +83,7 @@ function upvote(uuid) {
     .then(() => {
       markers_state.get(uuid).upvotes++;
       update_modal_if_open(uuid);
+      load_comments(uuid)
     })
     .catch((error) => console.error("Error:", error));
 }
@@ -94,8 +95,112 @@ function downvote(uuid) {
     .then(() => {
       markers_state.get(uuid).downvotes++;
       update_modal_if_open(uuid);
+      load_comments(uuid)
     })
     .catch((error) => console.error("Error:", error));
+}
+
+async function get_comments(location_uuid) {
+  fetch(`${API_BASE_URL}/location/${uuid}/comments`)
+    .then((response) => response.json())
+    .then((comments) => {
+      return comments;
+    })
+    .catch((error) => {
+      console.error("Error loading comments:", error);
+    });
+}
+
+// Function to load comments for a location
+function load_comments(uuid) {
+  const commentsContainer = document.getElementById(
+    `comments-container-${uuid}`,
+  );
+  commentsContainer.innerHTML =
+    '<p class="loading-comments">Loading comments...</p>';
+
+  fetch(`${API_BASE_URL}/location/${uuid}/comments`)
+    .then((response) => response.json())
+    .then((comments) => {
+      console.log(comments);
+      if (comments.length === 0) {
+        commentsContainer.innerHTML =
+          '<p class="no-comments">No comments yet. Be the first to add one!</p>';
+      } else {
+        commentsContainer.innerHTML = "";
+        comments.forEach((comment) => {
+          const commentElement = document.createElement("div");
+          commentElement.className = "comment";
+          commentElement.style.padding = "8px";
+          commentElement.style.borderBottom = "1px solid #eee";
+          commentElement.style.marginBottom = "8px";
+
+          // Format the date
+          //const commentDate = new Date(comment.created_at);
+          //const formattedDate =
+          //  commentDate.toLocaleDateString() +
+          //  " " +
+          //  commentDate.toLocaleTimeString();
+
+          commentElement.innerHTML = `
+            <p style="margin: 0; font-size: 0.9em; color: #666;">${comment.comment_time}</p>
+            <p style="margin: 5px 0;">${comment.text}</p>
+          `;
+          commentsContainer.appendChild(commentElement);
+        });
+      }
+    })
+    .catch((error) => {
+      console.error("Error loading comments:", error);
+      commentsContainer.innerHTML =
+        '<p class="error">Error loading comments. Please try again.</p>';
+    });
+}
+
+// Function to submit a new comment
+async function submit_comment(uuid, text) {
+  const commentInput = document.getElementById(`new-comment-${uuid}`);
+  const submitButton = commentInput.nextElementSibling;
+  // Disable the input and button while submitting
+  commentInput.disabled = true;
+  submitButton.disabled = true;
+  submitButton.textContent = "Submitting...";
+
+  const payload = {
+    text: text,
+  };
+
+  await fetch(`${API_BASE_URL}/location/${uuid}/comments`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(payload),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      // Clear the input field
+      commentInput.value = "";
+
+      // Re-enable the input and button
+      commentInput.disabled = false;
+      submitButton.disabled = false;
+      submitButton.textContent = "Add Comment";
+
+      // Reload the comments to show the new one
+      load_comments(uuid);
+    })
+    .catch((error) => {
+      console.error("Error adding comment:", error);
+
+      // Re-enable the input and button
+      commentInput.disabled = false;
+      submitButton.disabled = false;
+      submitButton.textContent = "Add Comment";
+
+      // Show error message
+      alert("Failed to add comment. Please try again.");
+    });
 }
 
 function create_marker_modal(mkr) {
@@ -118,6 +223,22 @@ function create_marker_modal(mkr) {
           <p><strong>Approval Rating:</strong> ${rating()}</p>
           <button onclick="upvote('${mkr.uuid}')">Like(${mkr.upvotes})</button>
           <button onclick="downvote('${mkr.uuid}')">Dislike(${mkr.downvotes})</button>
+
+          <!-- Comments Section -->
+          <div class="comments-section" style="margin-top: 20px; border-top: 1px solid #ddd; padding-top: 10px;">
+            <h3>Comments</h3>
+            <div id="comments-container-${mkr.uuid}" style="max-height: 200px; overflow-y: auto; margin-bottom: 10px;">
+              <!-- Comments will be loaded here -->
+              <p class="loading-comments">Loading comments...</p>
+            </div>
+            <!-- Add Comment Form -->
+            <form id="add-comment-form-${mkr.uuid}" class="add-comment-form">
+              <textarea id="new-comment-${mkr.uuid}" placeholder="Add your comment..." style="width: 100%; min-height: 60px; padding: 8px; margin-bottom: 8px;"></textarea>
+              <button type="submit" style="padding: 6px 12px; background-color: #4CAF50; color: white; border: none; cursor: pointer;">
+                Add Comment
+              </button>
+            </form>
+          </div>
         </div>`;
 }
 
@@ -127,9 +248,20 @@ function display_marker_modal(uuid) {
   modal_content = document.getElementById("location-dynamic-modal-content");
   // set the content
   modal_content.innerHTML = create_marker_modal(mkr);
+  // Set up event listener for adding comments
+  const commentForm = document.getElementById(`add-comment-form-${uuid}`);
+  commentForm.addEventListener("submit", function (e) {
+    e.preventDefault();
+    const commentText = document
+      .getElementById(`new-comment-${uuid}`)
+      .value.trim();
+    if (commentText) {
+      submit_comment(uuid, commentText);
+    }
+  });
+  load_comments(uuid)
   // actually make the modal show
   modal.style.display = "block";
-
   // when we want to close
   modal_close_btn = document.getElementById("modal-close-button");
   modal_close_btn.onclick = function () {
