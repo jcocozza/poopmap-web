@@ -11,12 +11,18 @@
     <link rel="stylesheet" href="/static/styles.css" />
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
 
-    <script src="static/config.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.Default.css"
+    />
+    <script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
+    <script type="module" src="static/js/location.js"></script>
+    <script type="module" src="static/js/main.js"></script>
+
   </head>
   <body>
     <!-- This is the actual map -->
     <div id="map" style="height: 95vh"></div>
-    <script src="static/map.js"></script>
 
     <!-- when a marker is pressed, this is shown -->
     <div id="location-modal" class="modal">
