@@ -1,6 +1,6 @@
 import { create_marker } from "./marker.js";
 import { create_location } from "./location.js";
-import { add_marker_to_state } from "./main.js"
+import { add_marker_to_state } from "./main.js";
 
 const map = L.map("map");
 map.locate({ setView: true });
@@ -59,9 +59,11 @@ map.on("locationfound", function (e) {
   user_lat = e.latitude;
   user_lng = e.longitude;
 });
+map.on("locationerror", function (e) {
+    console.error("Location error:", e.message);
+});
 
-
-map.on("click", function(e) {
+map.on("click", function (e) {
   var lat = e.latlng.lat;
   var lng = e.latlng.lng;
   var popup = document.getElementById("new-location-modal");
@@ -111,8 +113,8 @@ map.on("click", function(e) {
         0,
         0,
       );
-      var m = create_marker(mkr)
-      add_marker_to_state(mkr)
+      var m = create_marker(mkr);
+      add_marker_to_state(mkr);
       marker_cluster_group.addLayer(m);
       form.reset();
       popup.style.display = "none";

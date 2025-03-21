@@ -1,4 +1,4 @@
-export const API_BASE_URL = "http://localhost:54322/api";
+export const API_BASE_URL = "https://localhost:54322/api";
 
 export const config = {
   prod: {},
