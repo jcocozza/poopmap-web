@@ -1,3 +1,7 @@
+import { create_marker } from "./marker.js";
+import { create_location } from "./location.js";
+import { add_marker_to_state } from "./main.js"
+
 const map = L.map("map");
 map.locate({ setView: true });
 const marker_cluster_group = L.markerClusterGroup();
@@ -54,6 +58,66 @@ export var user_lng;
 map.on("locationfound", function (e) {
   user_lat = e.latitude;
   user_lng = e.longitude;
+});
+
+
+map.on("click", function(e) {
+  var lat = e.latlng.lat;
+  var lng = e.latlng.lng;
+  var popup = document.getElementById("new-location-modal");
+  popup.style.display = "block";
+
+  // close modal via 'x' button
+  var modal_close_btn = document.getElementById("new-loc-modal-close-button");
+  modal_close_btn.onclick = function () {
+    popup.style.display = "none";
+  };
+
+  // somehow this allows the popup to be dismissed if you click off it
+  window.onclick = function (e) {
+    if (e.target == popup) {
+      popup.style.display = "none";
+    }
+  };
+
+  var form = document.getElementById("new-location-form");
+  form.onsubmit = function (e) {
+    e.preventDefault();
+    // console.log(lat, lng);
+    const data = new FormData(e.target);
+    const name = data.get("name");
+    const location_type = data.get("location-type");
+    const accessible = data.get("accessible") != null; // if unchecked data.get("accessible") returns null
+    const seasons = data.getAll("seasons");
+    const info = data.get("info");
+    create_location(
+      lat,
+      lng,
+      name,
+      location_type,
+      accessible,
+      seasons,
+      info,
+    ).then((uuid) => {
+      const mkr = new Marker(
+        uuid,
+        lat,
+        lng,
+        name,
+        location_type,
+        accessible,
+        seasons,
+        info,
+        0,
+        0,
+      );
+      var m = create_marker(mkr)
+      add_marker_to_state(mkr)
+      marker_cluster_group.addLayer(m);
+      form.reset();
+      popup.style.display = "none";
+    });
+  };
 });
 
 export { map, marker_cluster_group };

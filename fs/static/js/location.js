@@ -39,7 +39,7 @@ export async function create_location(
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),
   });
-  let data = await resp.json();
+  let data = await response.json();
   return data.uuid;
 }
 

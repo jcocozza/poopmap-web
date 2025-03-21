@@ -8,6 +8,10 @@ import {
 
 const markers_state = new Map();
 
+export function add_marker_to_state(mkr) {
+  markers_state.set(mkr.uuid, mkr);
+}
+
 function upvote(uuid) {
   loc_upvote().then(() => {
     markers_state.get(uuid).upvotes++;
