@@ -41,7 +41,6 @@ async function init() {
       northeast.lng,
     );
     for (let i = 0; i < locations.length; i++) {
-      console.log("adding marker");
       const mkr = new Marker(
         locations[i]["uuid"],
         locations[i]["latitude"],
@@ -56,8 +55,53 @@ async function init() {
       );
       markers_state.set(mkr.uuid, mkr);
       var m = create_marker(mkr);
-      // m._icon.style.filter = `hue-rotate(${mkr.hue_rotate}deg)`;
       marker_cluster_group.addLayer(m);
+      m._icon.style.filter = `hue-rotate(${mkr.hue_rotate}deg)`;
+    }
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+async function update() {
+  const bounds = map.getBounds();
+  const southwest = bounds.getSouthWest();
+  const northeast = bounds.getNorthEast();
+  try {
+    var locations = await get_locations(
+      southwest.lat,
+      northeast.lat,
+      southwest.lng,
+      northeast.lng,
+    );
+    // this allows us to just keep the minimum amount of locations in memory
+    // the basic idea is from the observation that
+    // on zoom in, we probably decrease the number of locations
+    // and on zoom out, we probably increase the number of locations
+    // its not a guarantee, but a good enough heuristic
+    if (locations.length < markers_state.size) {
+      marker_cluster_group.clearLayers();
+      markers_state.clear();
+    }
+    for (let i = 0; i < locations.length; i++) {
+      const mkr = new Marker(
+        locations[i]["uuid"],
+        locations[i]["latitude"],
+        locations[i]["longitude"],
+        locations[i]["name"],
+        locations[i]["location_type"],
+        locations[i]["accessible"],
+        locations[i]["seasons"],
+        locations[i]["info"],
+        locations[i]["upvotes"],
+        locations[i]["downvotes"],
+      );
+      if (!markers_state.has(mkr.uuid)) {
+        markers_state.set(mkr.uuid, mkr);
+        var m = create_marker(mkr);
+        marker_cluster_group.addLayer(m);
+        //m._icon.style.filter = `hue-rotate(${mkr.hue_rotate}deg)`;
+      }
     }
   } catch (error) {
     console.error(error);
@@ -65,9 +109,7 @@ async function init() {
 }
 
 map.on("moveend", function () {
-  marker_cluster_group.clearLayers();
-  init();
+  update();
 });
 
-window.addEventListener("load", init);
-// window.addEventListener('load', () => console.log("running init"));
+// window.addEventListener("load", init);
