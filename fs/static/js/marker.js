@@ -58,6 +58,7 @@ function create_marker_modal(mkr) {
           <p><strong>Approval Rating:</strong> ${rating()}</p>
           <button onclick="upvote('${mkr.uuid}')">Like(${mkr.upvotes})</button>
           <button onclick="downvote('${mkr.uuid}')">Dislike(${mkr.downvotes})</button>
+          ${create_comments_container()}
         </div>`;
 }
 

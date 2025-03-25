@@ -80,7 +80,7 @@ export async function get_comments(location_uuid) {
   return data;
 }
 
-export async function create_comments(location_uuid, text) {
+export async function create_comment(location_uuid, text) {
   const response = await fetch(`${API_BASE_URL}/location/${uuid}/comments`, {
     method: "POST",
     headers: {
