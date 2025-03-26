@@ -1,4 +1,4 @@
-import { create_marker } from "./marker.js";
+import { Marker, create_marker } from "./marker.js";
 import { create_location } from "./location.js";
 import { add_marker_to_state } from "./main.js";
 
