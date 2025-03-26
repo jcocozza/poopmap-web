@@ -12,11 +12,11 @@
 
 .modal-content {
   background-color: #fff;
-  margin: 15% auto;
+  margin: 20px auto; /* Center horizontally, no vertical margin */
   padding: 20px;
   border: 1px solid #888;
-  width: fit-content;
-  /* width: 50%; /* Could be more or less, depending on screen size */
+  width: 50%;
+  position: relative;
 }
 
 .close-btn {

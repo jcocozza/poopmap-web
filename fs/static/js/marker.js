@@ -1,4 +1,5 @@
 import { user_lat, user_lng } from "./map.js";
+import { get_comments, create_comment } from "./location.js";
 
 export class Marker {
   constructor(
@@ -38,6 +39,63 @@ export class Marker {
   }
 }
 
+function create_comments_container() {
+  return `
+          <!-- Comments Section -->
+          <div class="comments-section" style="margin-top: 20px; border-top: 1px solid #ddd; padding-top: 10px;">
+            <h3>Comments</h3>
+            <div id="comments-container" style="max-height: 200px; overflow-y: auto; margin-bottom: 10px;">
+              <!-- Comments will be loaded here -->
+              <p id="loading-comments">Loading comments...</p>
+            </div>
+            <!-- Add Comment Form -->
+            <form id="add-comment-form" class="add-comment-form">
+              <textarea id="new-comment" placeholder="Add your comment..." style="width: 100%; min-height: 60px; padding: 8px; margin-bottom: 8px;"></textarea>
+              <button type="submit" style="padding: 6px 12px; background-color: #4CAF50; color: white; border: none; cursor: pointer;">
+                Add Comment
+              </button>
+            </form>
+          </div>
+  `;
+}
+
+
+function comment_html(comment) {
+  const commentElement = document.createElement("div");
+  commentElement.className = "comment";
+  commentElement.style.padding = "8px";
+  commentElement.style.borderBottom = "1px solid #eee";
+  commentElement.style.marginBottom = "8px";
+  commentElement.innerHTML = `
+    <p style="margin: 0; font-size: 0.9em; color: #666;">${comment.comment_time}</p>
+    <p style="margin: 5px 0; white-space: initial;">${comment.text}</p>
+  `;
+  return commentElement
+}
+
+async function load_and_display_comments(uuid) {
+  const commentsContainer = document.getElementById(`comments-container`);
+  try {
+    const comments = await get_comments(uuid);
+    if (comments.length == 0) {
+      commentsContainer.innerHTML =
+        '<p class="no-comments">No comments yet. Be the first to add one!</p>';
+      return;
+    }
+    // TODO: need to actually implement this logic to add comments
+    commentsContainer.innerHTML = "";
+    for (var i = 0; i < comments.length; i++) {
+      var comment = comments[i];
+      const commentElement = comment_html(comment)
+      commentsContainer.appendChild(commentElement);
+    }
+  } catch (error) {
+    console.error(error);
+    commentsContainer.innerHTML =
+      '<p class="error">Error loading comments. Please try again.</p>';
+  }
+}
+
 function create_marker_modal(mkr) {
   function rating() {
     if (mkr.upvotes === 0 && mkr.downvotes === 0) {
@@ -67,6 +125,23 @@ function display_marker_modal(mkr) {
   var modal_content = document.getElementById("location-dynamic-modal-content");
   // set the content
   modal_content.innerHTML = create_marker_modal(mkr);
+  // setup listen to watch if new comment is submitted
+  const commentForm = document.getElementById(`add-comment-form`);
+  commentForm.addEventListener("submit", function (e) {
+    e.preventDefault();
+    const commentInput = document.getElementById(`new-comment`)
+    const comment_text = commentInput.value.trim();
+    if (comment_text) {
+      create_comment(mkr.uuid, comment_text);
+      commentInput.value = "";
+      const commentsContainer = document.getElementById(`comments-container`);
+      const comment = {comment_time: Date.now(), text: comment_text}
+      const commentElement = comment_html(comment)
+      commentsContainer.appendChild(commentElement);
+    }
+  });
+
+  load_and_display_comments(mkr.uuid);
   // actually make the modal show
   modal.style.display = "block";
   // when we want to close

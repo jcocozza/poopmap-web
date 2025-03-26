@@ -127,7 +127,7 @@ function downvote(uuid) {
 }
 
 async function get_comments(location_uuid) {
-  fetch(`${API_BASE_URL}/location/${uuid}/comments`)
+  fetch(`${API_BASE_URL}/location/${location_uuid}/comments`)
     .then((response) => response.json())
     .then((comments) => {
       return comments;

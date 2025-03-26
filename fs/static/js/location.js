@@ -12,7 +12,7 @@ export async function get_locations(
   if (!response.ok) {
     throw new Error(`HTTP error! Status: ${response.status}`);
   }
-  const data = await response.json()
+  const data = await response.json();
   return data;
 }
 
@@ -72,7 +72,9 @@ export async function downvote(location_uuid) {
 }
 
 export async function get_comments(location_uuid) {
-  const response = await fetch(`${API_BASE_URL}/location/${uuid}/comments`);
+  const response = await fetch(
+    `${API_BASE_URL}/location/${location_uuid}/comments`,
+  );
   if (!response.ok) {
     throw new Error(`HTTP error! Status: ${response.status}`);
   }
@@ -81,13 +83,19 @@ export async function get_comments(location_uuid) {
 }
 
 export async function create_comment(location_uuid, text) {
-  const response = await fetch(`${API_BASE_URL}/location/${uuid}/comments`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
+  const payload = {
+    text: text,
+  };
+  const response = await fetch(
+    `${API_BASE_URL}/location/${location_uuid}/comments`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
     },
-    body: JSON.stringify(payload),
-  });
+  );
   if (!response.ok) {
     throw new Error(`HTTP error! Status: ${response.status}`);
   }
