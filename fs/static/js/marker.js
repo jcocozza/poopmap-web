@@ -135,6 +135,7 @@ function display_marker_modal(mkr) {
       create_comment(mkr.uuid, comment_text);
       commentInput.value = "";
       const commentsContainer = document.getElementById(`comments-container`);
+      // TODO: format Date.now() correctly
       const comment = {comment_time: Date.now(), text: comment_text}
       const commentElement = comment_html(comment)
       commentsContainer.appendChild(commentElement);
