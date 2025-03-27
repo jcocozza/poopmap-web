@@ -112,7 +112,7 @@ function create_marker_modal(mkr) {
           <label for="info" style="font-weight: bold; display: block; margin-top: 8px;">Additional Info:</label>
           <textarea id="info" style="width: 100%; min-height: 80px; padding: 8px;" readonly>${mkr.info}</textarea>
           <br>
-          <p><strong><a href="https://www.google.com/maps/dir/?api=1&origin=${user_lat},${user_lng}&destination=${mkr.lat},${mkr.lng}">Directions</a></strong></p>
+          <p><strong><a href="https://www.google.com/maps/dir/?api=1&origin=${user_lat},${user_lng}&destination=${mkr.lat},${mkr.lng}" target="_blank">Directions</a></strong></p>
           <p><strong>Approval Rating:</strong> ${rating()}</p>
           <button onclick="upvote('${mkr.uuid}')">Like(${mkr.upvotes})</button>
           <button onclick="downvote('${mkr.uuid}')">Dislike(${mkr.downvotes})</button>
