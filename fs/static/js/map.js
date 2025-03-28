@@ -46,6 +46,10 @@ legend.onAdd = function (map) {
             <img src="https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png" style="filter: hue-rotate(150deg); width: 20px; height: 20px; vertical-align: middle;">
             Outhouse
         </div>
+        <div>
+            <img src="https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png" style="filter: hue-rotate(0deg); width: 20px; height: 20px; vertical-align: middle;">
+            Other 
+        </div>
     `;
   return div;
 };

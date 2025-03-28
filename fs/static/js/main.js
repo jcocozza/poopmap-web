@@ -100,7 +100,9 @@ async function update() {
         markers_state.set(mkr.uuid, mkr);
         var m = create_marker(mkr);
         marker_cluster_group.addLayer(m);
-        //m._icon.style.filter = `hue-rotate(${mkr.hue_rotate}deg)`;
+        if (m && m._icon) {
+          m._icon.style.filter = `hue-rotate(${mkr.hue_rotate}deg)`;
+        }
       }
     }
   } catch (error) {

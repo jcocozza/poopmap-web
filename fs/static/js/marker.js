@@ -27,14 +27,19 @@ export class Marker {
     // set hue_rotate based on location_type
     // i am too lazy to create new markers (which is the correct way to do this)
     // so we're stuck with this hack
-    if (location_type === "porta-potty") {
-      this.hue_rotate = 30;
-    } else if (location_type === "regular") {
-      this.hue_rotate = 90;
-    } else if (location_type === "outhouse") {
-      this.hue_rotate = 150;
-    } else {
-      this.hue_rotate = 0; // Default value
+    switch (location_type) {
+      case "porta-potty":
+        this.hue_rotate = 30;
+        break;
+      case "outhouse":
+        this.hue_rotate = 150;
+        break;
+      case "regular":
+        this.hue_rotate = 90;
+        break;
+      default:
+        this.hue_rotate = 0; // Default value
+        break;
     }
   }
 }
