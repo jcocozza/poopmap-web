@@ -2,8 +2,10 @@ import { Marker, create_marker } from "./marker.js";
 import { create_location } from "./location.js";
 import { add_marker_to_state } from "./main.js";
 
-const map = L.map("map");
-map.locate({ setView: true });
+const map = L.map("map", { maxZoom: 18});
+// map.locate({ setView: true });
+map.setView([40.730610, -73.935242], 10)
+
 const marker_cluster_group = L.markerClusterGroup();
 map.addLayer(marker_cluster_group);
 
