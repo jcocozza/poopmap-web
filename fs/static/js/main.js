@@ -13,14 +13,14 @@ export function add_marker_to_state(mkr) {
 }
 
 function upvote(uuid) {
-  loc_upvote().then(() => {
+  loc_upvote(uuid).then(() => {
     markers_state.get(uuid).upvotes++;
     update_modal_if_open(markers_state.get(uuid));
   });
 }
 
 function downvote(uuid) {
-  loc_downvote().then(() => {
+  loc_downvote(uuid).then(() => {
     markers_state.get(uuid).downvotes++;
     update_modal_if_open(markers_state.get(uuid));
   });
