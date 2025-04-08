@@ -3,7 +3,7 @@
 
 export const API_BASE_URLS = {
     prod: "https://api.poopmap.xyz",
-    dev: "https://localhost:54322/"
+    dev: "http://localhost:54322"
 };
 
 export const config = {
