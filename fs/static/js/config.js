@@ -18,7 +18,7 @@ export const config = {
 };
 
 // ENV is either prod or dev
-export const ENV = 'dev';
+export const ENV = 'prod';
 export const API_BASE_URL = API_BASE_URLS[ENV];
 export const API_ROUTES = config[ENV];
 
