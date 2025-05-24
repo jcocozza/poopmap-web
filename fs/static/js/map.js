@@ -2,18 +2,36 @@ import { Marker, create_marker } from "./marker.js";
 import { create_location } from "./location.js";
 import { add_marker_to_state } from "./main.js";
 
-const map = L.map("map", { maxZoom: 18});
+const min_zoom = 5;
+const max_zoom = 16;
+
+const map = L.map("map", {
+  minZoom: min_zoom,
+  maxZoom: max_zoom,
+});
 // map.locate({ setView: true });
-map.setView([40.730610, -73.935242], 10)
+map.setView([40.73061, -73.935242], 10);
 
 const marker_cluster_group = L.markerClusterGroup();
 map.addLayer(marker_cluster_group);
 
-// Add a tile layer (OpenStreetMap here, but you could also use Google Maps or others)
-L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-  attribution:
-    '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-}).addTo(map);
+const token =
+  "pk.eyJ1IjoiamNvY296emEiLCJhIjoiY21iMWU0YmFxMDZpczJqcHhvaWp0NDFvMiJ9.rH-ipZGyMEB4VX5B6kv6wg";
+
+// see styles: https://docs.mapbox.com/api/maps/styles/
+const style = "outdoors-v12";
+
+L.tileLayer(
+  `https://api.mapbox.com/styles/v1/mapbox/${style}/tiles/512/{z}/{x}/{y}?access_token=${token}`,
+  {
+    tileSize: 512,
+    zoomOffset: -1,
+    minZoom: min_zoom,
+    maxZoom: max_zoom,
+    attribution:
+      '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> © <a href="https://www.mapbox.com/about/maps/">Mapbox</a> <strong><a href="https://labs.mapbox.com/contribute/" target="_blank">Improve this map</a></strong>',
+  },
+).addTo(map);
 
 // a button that centers the map back to the user's location
 var usr_nav_control = L.control({ position: "topright" });
@@ -66,7 +84,7 @@ map.on("locationfound", function (e) {
   user_lng = e.longitude;
 });
 map.on("locationerror", function (e) {
-    console.error("Location error:", e.message);
+  console.error("Location error:", e.message);
 });
 
 map.on("click", function (e) {
