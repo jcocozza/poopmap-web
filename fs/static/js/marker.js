@@ -104,11 +104,13 @@ function display_marker_modal(mkr) {
   // when we want to close
   var modal_close_btn = document.getElementById("modal-close-button");
   modal_close_btn.onclick = function () {
+    cancel_edit_location_info(mkr)
     modal.style.display = "none";
   };
   // somehow this allows the popup to be dismissed if you click off it
   window.onclick = function (e) {
     if (e.target == modal) {
+      cancel_edit_location_info(mkr)
       modal.style.display = "none";
     }
   };
