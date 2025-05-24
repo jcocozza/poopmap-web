@@ -187,7 +187,7 @@ function edit_location_info(mkr) {
       </select>
     `;
   accessible.innerHTML = `
-      <input type="checkbox" id="edit-accessible" ${mkr.accessible === "Yes" ? "checked" : ""}/> Accessible
+      <input type="checkbox" id="edit-accessible" ${mkr.accessible ? "checked" : ""}/> Accessible
     `;
   // Split the string of seasons and create checkboxes
   const seasonList = ["summer", "fall", "winter", "spring"];
