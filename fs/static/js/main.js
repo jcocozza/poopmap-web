@@ -12,22 +12,22 @@ export function add_marker_to_state(mkr) {
   markers_state.set(mkr.uuid, mkr);
 }
 
-function upvote(uuid) {
+export function upvote(uuid) {
   loc_upvote(uuid).then(() => {
     markers_state.get(uuid).upvotes++;
     update_modal_if_open(markers_state.get(uuid));
   });
 }
 
-function downvote(uuid) {
+export function downvote(uuid) {
   loc_downvote(uuid).then(() => {
     markers_state.get(uuid).downvotes++;
     update_modal_if_open(markers_state.get(uuid));
   });
 }
 
-window.upvote = upvote;
-window.downvote = downvote;
+// window.upvote = upvote;
+// window.downvote = downvote;
 
 async function init() {
   const bounds = map.getBounds();

@@ -38,8 +38,39 @@
     <div id="location-modal" class="modal">
       <div class="modal-content">
         <span id="modal-close-button" class="close-btn">&times;</span>
-        <!-- in particular, this div's inner html is replaced -->
-        <div id="location-dynamic-modal-content"></div>
+        <!-- content will be inject in from js -->
+        <h2 id="location-modal-name"></h2>
+        <p><strong>Type:</strong> <span id="location-modal-location-type"></span></p>
+        <p><strong>Accessible:</strong> <span id="location-modal-accessible"></span></p>
+        <p><strong>Seasons:</strong> <span id="location-modal-seasons"></span></p>
+        <label for="location-modal-info" style="font-weight: bold; display: block; margin-top: 8px;">Additional Info:</label>
+        <textarea id="location-modal-info" style="width: 100%; min-height: 80px; padding: 8px;" readonly></textarea>
+        <button id="location-modal-edit-btn">Edit</button>
+        <button id="location-modal-save-btn" style="display: none;">Save</button>
+        <button id="location-modal-cancel-btn" style="display: none;">Cancel</button>
+        <br>
+        <p><strong><a id="location-modal-maps-url" href="#" target="_blank">Directions</a></strong></p>
+        <p><strong>Approval Rating:</strong> <span id="location-modal-rating"></span></p>
+        <button id="location-modal-upvote-btn" data-id="">Like(<span id="location-modal-upvotes"></span>)</button>
+        <button id="location-modal-downvote-btn" data-id="">Dislike(<span id="location-modal-downvotes"></span>)</button>
+
+        <div id="location-modal-comments">
+          <!-- Comments Section -->
+          <div class="comments-section" style="margin-top: 20px; border-top: 1px solid #ddd; padding-top: 10px;">
+            <h3>Comments</h3>
+            <div id="comments-container" style="max-height: 200px; overflow-y: auto; margin-bottom: 10px;">
+              <!-- Comments will be loaded here -->
+              <p id="loading-comments">Loading comments...</p>
+            </div>
+            <!-- Add Comment Form -->
+            <form id="add-comment-form" class="add-comment-form">
+              <textarea id="new-comment" placeholder="Add your comment..." style="width: 100%; min-height: 60px; padding: 8px; margin-bottom: 8px;"></textarea>
+              <button type="submit" style="padding: 6px 12px; background-color: #4CAF50; color: white; border: none; cursor: pointer;">
+                Add Comment
+              </button>
+            </form>
+          </div>
+        </div>
       </div>
     </div>
 

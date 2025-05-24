@@ -43,6 +43,33 @@ export async function create_location(
   return data.uuid;
 }
 
+export async function update_location(
+  uuid,
+  name,
+  location_type,
+  accessible,
+  seasons,
+  info,
+) {
+  const payload = {
+    name: name,
+    location_type: location_type,
+    accessible: accessible,
+    seasons: seasons,
+    info: info,
+  };
+  const response = await fetch(`${API_BASE_URL}/location/${uuid}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(payload),
+  });
+  if (!response.ok) {
+    throw new Error(`HTTP error! Status: ${response.status}`);
+  }
+}
+
 export async function upvote(location_uuid) {
   const response = await fetch(
     `${API_BASE_URL}/location/${location_uuid}/upvote`,
