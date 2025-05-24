@@ -26,9 +26,6 @@ export function downvote(uuid) {
   });
 }
 
-// window.upvote = upvote;
-// window.downvote = downvote;
-
 async function init() {
   const bounds = map.getBounds();
   const southwest = bounds.getSouthWest();

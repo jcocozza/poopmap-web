@@ -3,7 +3,6 @@ import { create_location } from "./location.js";
 import { add_marker_to_state } from "./main.js";
 
 const map = L.map("map", { maxZoom: 18});
-// map.locate({ setView: true });
 map.setView([40.730610, -73.935242], 10)
 
 const marker_cluster_group = L.markerClusterGroup();
@@ -50,7 +49,7 @@ legend.onAdd = function (map) {
         </div>
         <div>
             <img src="https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png" style="filter: hue-rotate(0deg); width: 20px; height: 20px; vertical-align: middle;">
-            Other 
+            Other
         </div>
     `;
   return div;

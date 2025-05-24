@@ -80,8 +80,6 @@ export async function upvote(location_uuid) {
   if (!response.ok) {
     throw new Error(`HTTP error! Status: ${response.status}`);
   }
-  //let data = await response.json();
-  //return data;
 }
 
 export async function downvote(location_uuid) {
@@ -94,8 +92,6 @@ export async function downvote(location_uuid) {
   if (!response.ok) {
     throw new Error(`HTTP error! Status: ${response.status}`);
   }
-  //let data = await response.json();
-  //return data;
 }
 
 export async function get_comments(location_uuid) {
