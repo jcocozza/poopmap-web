@@ -93,35 +93,3 @@ export async function downvote(location_uuid) {
     throw new Error(`HTTP error! Status: ${response.status}`);
   }
 }
-
-export async function get_comments(location_uuid) {
-  const response = await fetch(
-    `${API_BASE_URL}/location/${location_uuid}/comments`,
-  );
-  if (!response.ok) {
-    throw new Error(`HTTP error! Status: ${response.status}`);
-  }
-  let data = await response.json();
-  return data;
-}
-
-export async function create_comment(location_uuid, text) {
-  const payload = {
-    text: text,
-  };
-  const response = await fetch(
-    `${API_BASE_URL}/location/${location_uuid}/comments`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(payload),
-    },
-  );
-  if (!response.ok) {
-    throw new Error(`HTTP error! Status: ${response.status}`);
-  }
-  let data = await response.json();
-  return data;
-}
